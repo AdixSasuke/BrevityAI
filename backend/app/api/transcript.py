@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
+from pydantic import BaseModel
 
 from ..database.session import get_db
 from .auth import oauth2_scheme
@@ -8,15 +9,25 @@ from ..models.transcript import Transcript
 
 router = APIRouter()
 
+class YoutubeUrlRequest(BaseModel):
+    youtube_url: str
+
 @router.post("/extract")
 async def extract_transcript(
-    youtube_url: str,
-    token: str = Depends(oauth2_scheme),
+    request: YoutubeUrlRequest,
     db: AsyncSession = Depends(get_db)
 ):
     """Extract transcript from a YouTube video"""
     # Placeholder for transcript extraction logic
-    return {"message": "Transcript extraction endpoint", "url": youtube_url}
+    mock_transcript = {
+        "id": 123,
+        "youtube_id": "abc123",
+        "title": "Sample YouTube Video",
+        "original_text": "This is a sample transcript text extracted from the YouTube video.",
+        "rewritten_text": None,
+        "created_at": "2025-04-14T12:00:00Z"
+    }
+    return mock_transcript
 
 @router.post("/rewrite")
 async def rewrite_transcript(
